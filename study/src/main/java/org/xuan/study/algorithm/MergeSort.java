@@ -3,7 +3,7 @@ package org.xuan.study.algorithm;
 import java.util.Arrays;
 
 /**
- * ¹é²¢ÅÅÐò
+ * å½’å¹¶æŽ’åº
  * 
  * @author liu.xuan
  *
@@ -11,26 +11,26 @@ import java.util.Arrays;
 public class MergeSort {
 
 	/**
-	 * ¹é²¢ÅÅÐò ¼ò½é:½«Á½¸ö£¨»òÁ½¸öÒÔÉÏ£©ÓÐÐò±íºÏ²¢³ÉÒ»¸öÐÂµÄÓÐÐò±í
-	 * ¼´°Ñ´ýÅÅÐòÐòÁÐ·ÖÎªÈô¸É¸ö×ÓÐòÁÐ£¬Ã¿¸ö×ÓÐòÁÐÊÇÓÐÐòµÄ¡£È»ºóÔÙ°ÑÓÐÐò×ÓÐòÁÐºÏ²¢ÎªÕûÌåÓÐÐòÐòÁÐ Ê±¼ä¸´ÔÓ¶ÈÎªO(nlogn) ÎÈ¶¨ÅÅÐò·½Ê½
+	 * å½’å¹¶æŽ’åº ç®€ä»‹:å°†ä¸¤ä¸ªï¼ˆæˆ–ä¸¤ä¸ªä»¥ä¸Šï¼‰æœ‰åºè¡¨åˆå¹¶æˆä¸€ä¸ªæ–°çš„æœ‰åºè¡¨
+	 * å³æŠŠå¾…æŽ’åºåºåˆ—åˆ†ä¸ºè‹¥å¹²ä¸ªå­åºåˆ—ï¼Œæ¯ä¸ªå­åºåˆ—æ˜¯æœ‰åºçš„ã€‚ç„¶åŽå†æŠŠæœ‰åºå­åºåˆ—åˆå¹¶ä¸ºæ•´ä½“æœ‰åºåºåˆ— æ—¶é—´å¤æ‚åº¦ä¸ºO(nlogn) ç¨³å®šæŽ’åºæ–¹å¼
 	 * 
 	 * @param nums
-	 *            ´ýÅÅÐòÊý×é
+	 *            å¾…æŽ’åºæ•°ç»„
 	 * @param low
-	 *            Êý×éµÄÊ×Î»ÏÂ±ê
+	 *            æ•°ç»„çš„é¦–ä½ä¸‹æ ‡
 	 * @param hight
-	 *            Êý×éµÄÄ©Î»ÏÂ±ê
-	 * @return Êä³öÓÐÐòÊý×é
+	 *            æ•°ç»„çš„æœ«ä½ä¸‹æ ‡
+	 * @return è¾“å‡ºæœ‰åºæ•°ç»„
 	 */
 	public static int[] sort(int[] nums, int low, int high) {
-		// Êý×éÖÐÎ»Êý
+		// æ•°ç»„ä¸­ä½æ•°
 		int mid = (low + high) / 2;
 		if (low < high) {
-			// ×ó±ß
+			// å·¦è¾¹
 			sort(nums, low, mid);
-			// ÓÒ±ß
+			// å³è¾¹
 			sort(nums, mid + 1, high);
-			// ×óÓÒ¹é²¢
+			// å·¦å³å½’å¹¶
 			merge(nums, low, mid, high);
 		}
 		return nums;
@@ -38,11 +38,11 @@ public class MergeSort {
 
 	public static void merge(int[] nums, int low, int mid, int high) {
 		int[] temp = new int[high - low + 1];
-		int i = low;// ×óÖ¸Õë
-		int j = mid + 1;// ÓÒÖ¸Õë
+		int i = low;// å·¦æŒ‡é’ˆ
+		int j = mid + 1;// å³æŒ‡é’ˆ
 		int k = 0;
 
-		// °Ñ½ÏÐ¡µÄÊýÏÈÒÆµ½ÐÂÊý×éÖÐ
+		// æŠŠè¾ƒå°çš„æ•°å…ˆç§»åˆ°æ–°æ•°ç»„ä¸­
 		while (i <= mid && j <= high) {
 			if (nums[i] < nums[j]) {
 				temp[k++] = nums[i++];
@@ -51,23 +51,23 @@ public class MergeSort {
 			}
 		}
 
-		// °Ñ×ó±ßÊ£ÓàµÄÊýÒÆÈëÊý×é
+		// æŠŠå·¦è¾¹å‰©ä½™çš„æ•°ç§»å…¥æ•°ç»„
 		while (i <= mid) {
 			temp[k++] = nums[i++];
 		}
 
-		// °ÑÓÒ±ß±ßÊ£ÓàµÄÊýÒÆÈëÊý×é
+		// æŠŠå³è¾¹è¾¹å‰©ä½™çš„æ•°ç§»å…¥æ•°ç»„
 		while (j <= high) {
 			temp[k++] = nums[j++];
 		}
 
-		// °ÑÐÂÊý×éÖÐµÄÊý¸²¸ÇnumsÊý×é
+		// æŠŠæ–°æ•°ç»„ä¸­çš„æ•°è¦†ç›–numsæ•°ç»„
 		for (int k2 = 0; k2 < temp.length; k2++) {
 			nums[k2 + low] = temp[k2];
 		}
 	}
 
-	// ¹é²¢ÅÅÐòµÄÊµÏÖ
+	// å½’å¹¶æŽ’åºçš„å®žçŽ°
 	public static void main(String[] args) {
 
 		int[] nums = { 2, 7, 8, 3, 1, 6, 9, 0, 5, 4 };
