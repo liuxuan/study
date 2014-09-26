@@ -2,11 +2,12 @@ package org.xuan.study.algorithm;
 
 /**
  * ≤Â»Î≈≈–Ú
+ * 
  * @author liu.xuan
  *
  */
 public class InsertionSort {
-	
+
 	public void sort(int[] array) {
 		for (int j = 1; j < array.length; j++) {
 			int key = array[j];
@@ -20,7 +21,7 @@ public class InsertionSort {
 	}
 
 	public static void main(String[] args) {
-		int[] sortArray = new int[] {5, 6, 1, 8, 3, 7, 2, 9};
+		int[] sortArray = new int[] { 5, 6, 1, 8, 3, 7, 2, 9 };
 		InsertionSort sort = new InsertionSort();
 		sort.sort(sortArray);
 		for (int i = 0; i < sortArray.length; i++) {
