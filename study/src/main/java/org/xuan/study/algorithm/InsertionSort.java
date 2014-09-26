@@ -1,7 +1,7 @@
 package org.xuan.study.algorithm;
 
 /**
- * ²åÈëÅÅĞò
+ * æ’å…¥æ³•æ’åº
  * 
  * @author liu.xuan
  *
