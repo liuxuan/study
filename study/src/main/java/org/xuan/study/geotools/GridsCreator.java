@@ -26,6 +26,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.grid.Envelopes;
+import org.geotools.grid.GridElement;
 import org.geotools.grid.GridFeatureBuilder;
 import org.geotools.grid.Grids;
 import org.geotools.referencing.CRS;
@@ -65,18 +66,26 @@ public class GridsCreator {
 		try {
 			dataStore = FileDataStoreFinder.getDataStore(f.toURI().toURL());
 			mapSource = dataStore.getFeatureSource();
-
-			// 设置网格边长为1°
-			double sideLen = 1.0;
+			// 设置网格边长为50km
+			double sideLen = 50000;
 			// 将shp数据源的bounds向外扩展一个边长的宽度，此举是为了避免边界处的网格被过滤掉
 			ReferencedEnvelope gridBounds = Envelopes.expandToInclude(
-					mapSource.getBounds(), sideLen);
+					mapSource.getBounds().transform(CRS.decode("EPSG:3857"), true), sideLen);
 			SimpleFeatureType TYPE = createFeatureType();
 			GridFeatureBuilder builder = new IntersectionBuilder(TYPE,
 					mapSource);
-			grid = Grids.createHexagonalGrid(gridBounds, sideLen, -1, builder);
+			grid = Grids.createSquareGrid(gridBounds, sideLen, -1, builder);
 		} catch (IOException e) {
 			System.out.println("找不到shp文件");
+		} catch (NoSuchAuthorityCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return grid;
 	}
@@ -84,7 +93,22 @@ public class GridsCreator {
 	private SimpleFeatureType createFeatureType() {
 		SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
 		tb.setName("grid");
-		tb.add("the_geom", Polygon.class, DefaultGeographicCRS.WGS84);
+		try {
+			/*
+	         * The Shapefile format has a couple limitations:
+	         * - "the_geom" is always first, and used for the geometry attribute name
+	         * - "the_geom" must be of type Point, MultiPoint, MuiltiLineString, MultiPolygon
+	         * - Attribute names are limited in length 
+	         * - Not all data types are supported (example Timestamp represented as Date)
+	         * 
+	         * Each data store has different limitations so check the resulting SimpleFeatureType.
+	         */
+			tb.add("the_geom", Polygon.class, CRS.decode("EPSG:3857"));
+		} catch (NoSuchAuthorityCodeException e) {
+			e.printStackTrace();
+		} catch (FactoryException e) {
+			e.printStackTrace();
+		}
 		tb.add("id", Integer.class);
 		SimpleFeatureType TYPE = tb.buildFeatureType();
 		return TYPE;
@@ -98,7 +122,7 @@ public class GridsCreator {
 			Geometry geom = (Geometry) feature.getDefaultGeometry();
 			Coordinate coord = geom.getCoordinate();
 			System.out.println(feature.getBounds()
-					.getCoordinateReferenceSystem().toString());
+					.getCoordinateReferenceSystem().getName().getCode());
 			System.out.println("x:" + coord.x + ";y:" + coord.y);
 		}
 	}
@@ -153,7 +177,6 @@ public class GridsCreator {
 		try {
 			createShapefile(gridFile, collection);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
